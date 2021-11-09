@@ -18,11 +18,11 @@ public class RibbonServiceImpl implements RibbonService {
 
 
     @Override
-    public String stockZhANew() {
+    public JSONObject stockZhANew() {
         String host = globalConfig.getConfig().getString("host");
         JSONObject services = globalConfig.getConfig().getJSONObject("services");
 
-        return restTemplate.getForObject(host+services.getString("stock_zh_a_new"), String.class);
-
+        // return restTemplate.getForObject(host+services.getString("stock_zh_a_new"), String.class);
+        return restTemplate.postForObject(host+services.getString("stock_zh_a_new"), null, JSONObject.class);
     }
 }
