@@ -1,0 +1,17 @@
+server:
+  port: 8703
+spring:
+  profiles:
+    active: common
+  application:
+    name: ribbon-8703
+
+logging:
+  level:
+    cn.zm: debug
+
+# eureka
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8700/eureka/

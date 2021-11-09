@@ -1,0 +1,23 @@
+server:
+  port: 8701
+spring:
+  profiles:
+    active: common, plus
+  application:
+    name: service-app
+
+logging:
+  level:
+    cn.zm: debug
+
+global:
+  config:
+    host: http://localhost:8000/api/
+    services:
+      stock_zh_a_new: stock_zh_a_new
+
+# eureka
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://localhost:8700/eureka/
