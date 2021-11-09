@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RibbonServiceImpl implements RibbonService {
@@ -18,11 +20,11 @@ public class RibbonServiceImpl implements RibbonService {
 
 
     @Override
-    public JSONObject stockZhANew() {
+    public List stockZhANew() {
         String host = globalConfig.getConfig().getString("host");
         JSONObject services = globalConfig.getConfig().getJSONObject("services");
 
         // return restTemplate.getForObject(host+services.getString("stock_zh_a_new"), String.class);
-        return restTemplate.postForObject(host+services.getString("stock_zh_a_new"), null, JSONObject.class);
+        return restTemplate.postForObject(host+services.getString("stock_zh_a_new"), null, ArrayList.class);
     }
 }
