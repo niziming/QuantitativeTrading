@@ -24,7 +24,19 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- SpringMVC校验 -->
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate-validator.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>

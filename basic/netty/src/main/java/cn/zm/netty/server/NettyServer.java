@@ -51,7 +51,7 @@ public class NettyServer {
 
     @Resource
     public void setWebSocketPath(GlobalConfig globalConfig) {
-        JSONObject websocket = globalConfig.getNetty().get("websocket");
+        JSONObject websocket = globalConfig.getNetty().getJSONObject("websocket");
         this.webSocketPath = websocket.getString("path");
         this.port = websocket.getInteger("port");
     }

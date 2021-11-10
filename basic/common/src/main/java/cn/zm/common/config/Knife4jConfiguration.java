@@ -50,18 +50,18 @@ public class Knife4jConfiguration {
                 .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
                 .paths(PathSelectors.any())
                 .build()
-                .securityContexts(
-                    Lists
-                        .newArrayList(
-                            securityContext(),
-                            securityContext1()
-                        ))
-                .securitySchemes(
-                    Lists
-                        .<SecurityScheme>newArrayList(
-                            apiKey(),
-                            apiKey1()
-                    ))
+                // .securityContexts(
+                //     Lists
+                //         .newArrayList(
+                //             securityContext(),
+                //             securityContext1()
+                //         ))
+                // .securitySchemes(
+                //     Lists
+                //         .<SecurityScheme>newArrayList(
+                //             apiKey(),
+                //             apiKey1()
+                //     ))
                 ;
     }
 

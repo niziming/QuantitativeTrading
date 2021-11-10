@@ -12,9 +12,10 @@ logging:
 
 global:
   config:
-    host: http://localhost:8000/api/
+    host: http://localhost:8000
     services:
-      stock_zh_a_new: stock_zh_a_new
+      stock_zh_a_new: stock_zh_a_new  # 股票数据次新股
+      macro_china_xfzxx: macro_china_xfzxx  # 消费者信心指数
 
 # eureka
 #eureka:
