@@ -12,10 +12,12 @@ logging:
 
 global:
   config:
-    host: http://localhost:8000
+    host: http://localhost:8000/
     services:
-      stock_zh_a_new: stock_zh_a_new  # 股票数据次新股
-      macro_china_xfzxx: macro_china_xfzxx  # 消费者信心指数
+      - {service: 股票数据次新股, url: stock_zh_a_new}
+      - {service: 消费者信心指数, url: macro_china_xfzxx}
+      - {service: 基金基本信息, url: fund_em_fund_name, param: null}
+      - {service: 开放式基金-历史数据, url: fund_em_open_fund_info, param1: fund="710001"; 需要基金代码, 可以通过调用 fund_em_open_fund_daily 获取, parame2: indicator="单位净值走势"; 参见 fund_em_open_fund_info 参数一览表}
 
 # eureka
 #eureka:
