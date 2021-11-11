@@ -1,6 +1,7 @@
 package cn.zm.strategy.web.rest;
 
 import cn.zm.common.base.ResResult;
+import cn.zm.common.config.GlobalConfig;
 import cn.zm.plus.base.BaseController;
 import cn.zm.strategy.web.entity.FundBasicInfo;
 import cn.zm.strategy.web.entity.dto.FundBasicInfoDTO;
@@ -9,18 +10,25 @@ import cn.zm.strategy.web.service.IFundBasicInfoService;
 import cn.zm.strategy.web.service.RemoteService;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.yaml.snakeyaml.events.Event;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 基金基本信息
@@ -29,7 +37,9 @@ import java.util.stream.Collectors;
  */
 @RequestMapping("fundBasicInfo")
 @RestController
+@Slf4j
 @Api(tags = "基金基本信息")
+@Transactional(rollbackFor = Exception.class)
 public class FundBasicInfoController extends BaseController {
     @Resource
     private RemoteService remoteService;
@@ -37,6 +47,11 @@ public class FundBasicInfoController extends BaseController {
     private IFundBasicInfoService fundBasicInfoService;
 
     private static JSONObject services;
+
+    public FundBasicInfoController(GlobalConfig globalConfig){
+        services = globalConfig.getConfig().getJSONObject("services");
+    }
+
 
     @GetMapping
     @ApiOperation("基金基本信息page查询")
@@ -64,27 +79,33 @@ public class FundBasicInfoController extends BaseController {
         ArrayList<FundBasicInfo> res = remoteService.postCall(url, param, ArrayList.class);
         List<String> ids = res.stream().map(r -> r.get基金代码()).collect(Collectors.toList());
         // 查询数据库存在的数据
-        // fundBasicInfoService.listObjs()
+        List<String> collect = fundBasicInfoService
+          .listByIds(ids)
+          .stream()
+          .map(FundBasicInfo::get基金代码)
+          .collect(Collectors.toList());
 
-        // 批量存储
-        int size = 0;
-        while (size < res.size()) {
-            List<FundBasicInfo> batch = res.stream()
-              .skip(size)
-              .limit(500)
-              .collect(Collectors.toList());
-            fundBasicInfoService.saveBatch(batch);
-            size += 500;
-        }
+        res.removeAll(collect);
+
+        // // 批量存储
+        // int size = 0;
+        // while (size < res.size()) {
+        //     List<FundBasicInfo> batch = res.stream()
+        //       .skip(size)
+        //       .limit(500)
+        //       .collect(Collectors.toList());
+        //     fundBasicInfoService.saveBatch(batch);
+        //     log.info("批量存储{}", 500);
+        //     size += 500;
+        // }
         return ResResult.succ("同步成功");
     }
 
     @GetMapping("{id}")
     @ApiOperation("基金基本信息查询(id)")
     public ResResult<FundBasicInfoVO> get(@PathVariable String id) {
-        // TODO 查询
-        boolean aNull = Objects.isNull(fundBasicInfoService.getById(id));
-        return ResResult.succ(aNull ? null : fundBasicInfoService.getById(id).convert());
+        FundBasicInfo res = fundBasicInfoService.getById(id);
+        return ResResult.succ(res == null ? null : res.convert());
     }
 
     @PostMapping

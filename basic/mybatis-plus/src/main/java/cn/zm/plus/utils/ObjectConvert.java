@@ -1,5 +1,6 @@
 package cn.zm.plus.utils;
 
+import cn.hutool.core.bean.BeanUtil;
 import org.springframework.beans.BeanUtils;
 
 import java.lang.reflect.ParameterizedType;
@@ -17,7 +18,7 @@ public class ObjectConvert<T> {
         beforeConvert();
         try {
             t = newInstance();
-            BeanUtils.copyProperties(this, t);
+            BeanUtil.copyProperties(this, t);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Bean convert faild, Caused by " + e);
