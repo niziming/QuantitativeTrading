@@ -22,7 +22,7 @@ import java.util.Optional;
  * @return
  */
 @Slf4j
-public class  BaseController {
+public class BaseController {
     private final static String PAGE = "page";
 
     private final static String SIZE = "size";

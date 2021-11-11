@@ -2,7 +2,7 @@ package cn.zm.strategy.web.service;
 
 import java.util.List;
 
-public interface RemoteCallService {
+public interface RemoteService {
     /** 功能描述: <br>
      * <HTTP post 方法 远程调用>
      *
@@ -10,5 +10,5 @@ public interface RemoteCallService {
      * @date 2021/11/10 14:09
      * @return java.util.List
      */
-    Object postCall(String service, Object params);
+    <T> T postCall(String service, Object params, Class<T> type);
 }

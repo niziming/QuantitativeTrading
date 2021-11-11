@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import ${superControllerClassPackage};
 </#if>
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import cn.zm.common.common.ResponseResult;
+import cn.zm.common.common.ResResult;
 import ${package.Entity}.dto.<#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity? cap_first}</#if>DTO;
 import ${package.Entity}.vo.<#if entity?ends_with("VO")>${entity? cap_first? substring(0, entity? index_of("VO"))}<#else>${entity? cap_first}</#if>VO;
 import io.swagger.annotations.ApiImplicitParam;
@@ -54,10 +54,10 @@ public class ${table.controllerName} {
         @ApiImplicitParam(name = "orderByColumn", value = "排序字段"),
         @ApiImplicitParam(name = "isDesc", value = "是否降序")
     })
-    public ResponseResult<IPage<<#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity? cap_first}</#if>VO>> getByPage(@Validated <#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity}</#if>DTO <#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>) {
+    public ResResult<IPage<<#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity? cap_first}</#if>VO>> getByPage(@Validated <#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity}</#if>DTO <#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>) {
         // TODO 分页查询
         IPage<<#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity? cap_first}</#if>VO> page = <#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>Service.selectByPage(getPage(), ${entity? uncap_first});
-        return ResponseResult.succ(page);
+        return ResResult.succ(page);
     }
 
     @GetMapping("list")
@@ -66,42 +66,42 @@ public class ${table.controllerName} {
         @ApiImplicitParam(name = "orderByColumn", value = "排序字段"),
         @ApiImplicitParam(name = "isDesc", value = "是否降序")
     })
-    public ResponseResult<IPage<<#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity? cap_first}</#if>VO>> getByPage(@Validated <#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity}</#if>DTO <#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>) {
+    public ResResult<IPage<<#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity? cap_first}</#if>VO>> getList(@Validated <#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity}</#if>DTO <#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>) {
         // TODO 分页查询
         IPage<<#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity? cap_first}</#if>VO> page = <#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>Service.selectByPage(getPage(), ${entity? uncap_first});
-        return ResponseResult.succ(page);
+        return ResResult.succ(page);
     }
 
     @GetMapping("{id}")
     @ApiOperation("${table.comment!}查询(id)")
-    public ResponseResult<<#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity? cap_first}</#if>VO> get(@PathVariable String id) {
+    public ResResult<<#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity? cap_first}</#if>VO> get(@PathVariable String id) {
         // TODO 查询
         boolean aNull = Objects.isNull(<#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>Service.getById(id));
-        return ResponseResult.succ(aNull ? null : <#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>Service.getById(id).convert());
+        return ResResult.succ(aNull ? null : <#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>Service.getById(id).convert());
     }
 
     @PostMapping
     @ApiOperation("${table.comment!}新增")
-    public ResponseResult add(@RequestBody @Validated <#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity}</#if>DTO <#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>) {
+    public ResResult add(@RequestBody @Validated <#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity}</#if>DTO <#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>) {
         // TODO 新增
         <#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>Service.save(${entity? uncap_first}.convert());
-        return ResponseResult.succ("新增成功");
+        return ResResult.succ("新增成功");
     }
 
     @DeleteMapping("{id}")
     @ApiOperation("${table.comment!}删除")
-    public ResponseResult del(@PathVariable String id) {
+    public ResResult del(@PathVariable String id) {
         // TODO 删除
         <#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>Service.removeById(id);
-        return ResponseResult.succ("删除成功");
+        return ResResult.succ("删除成功");
     }
 
     @PutMapping
     @ApiOperation("${table.comment!}修改")
-    public ResponseResult update(@RequestBody @Validated <#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity}</#if>DTO <#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>) {
+    public ResResult update(@RequestBody @Validated <#if entity?ends_with("DTO")>${entity? cap_first? substring(0, entity? index_of("DTO"))}<#else>${entity}</#if>DTO <#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>) {
         // TODO 修改
         <#if entity?ends_with("DTO")>${entity? substring(0, entity? uncap_first? index_of("DTO"))}<#else>${entity? uncap_first}</#if>Service.updateById(${entity? uncap_first}.convert());
-        return ResponseResult.succ("修改成功");
+        return ResResult.succ("修改成功");
     }
 }
 </#if>
