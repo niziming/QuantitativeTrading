@@ -77,12 +77,12 @@ public class FundBasicInfoController extends BaseController {
 
         // 调用远程接口查询所有基金数据
         ArrayList<FundBasicInfo> res = remoteService.postCall(url, param, ArrayList.class);
-        List<String> ids = res.stream().map(r -> r.get基金代码()).collect(Collectors.toList());
+        List<String> ids = res.stream().map(r -> r.getFundCode()).collect(Collectors.toList());
         // 查询数据库存在的数据
         List<String> collect = fundBasicInfoService
           .listByIds(ids)
           .stream()
-          .map(FundBasicInfo::get基金代码)
+          .map(FundBasicInfo::getFundCode)
           .collect(Collectors.toList());
 
         res.removeAll(collect);
@@ -101,10 +101,10 @@ public class FundBasicInfoController extends BaseController {
         return ResResult.succ("同步成功");
     }
 
-    @GetMapping("{id}")
-    @ApiOperation("基金基本信息查询(id)")
-    public ResResult<FundBasicInfoVO> get(@PathVariable String id) {
-        FundBasicInfo res = fundBasicInfoService.getById(id);
+    @GetMapping("{fundCode}")
+    @ApiOperation("基金基本信息查询(fundCode)")
+    public ResResult<FundBasicInfoVO> get(@PathVariable String fundCode) {
+        FundBasicInfo res = fundBasicInfoService.getById(fundCode);
         return ResResult.succ(res == null ? null : res.convert());
     }
 

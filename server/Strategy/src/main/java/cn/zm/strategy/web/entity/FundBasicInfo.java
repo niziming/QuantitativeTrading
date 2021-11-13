@@ -19,19 +19,19 @@ import lombok.NoArgsConstructor;
 @TableName("fund_basic_info")
 @ApiModel(value = "基金基本信息", description = "基金基本信息")
 public class FundBasicInfo extends ObjectConvert<FundBasicInfoVO> {
-  @TableId(value = "基金代码", type = IdType.ID_WORKER)
+  @TableId(type = IdType.ID_WORKER_STR)
   @ApiModelProperty("基金代码")
-  private String 基金代码;
+  private String fundCode;
 
   @ApiModelProperty("拼音缩写")
-  private String 拼音缩写;
+  private String fundAbbr;
 
   @ApiModelProperty("基金简称")
-  private String 基金简称;
+  private String fundIntro;
 
   @ApiModelProperty("基金类型")
-  private String 基金类型;
+  private String fundType;
 
   @ApiModelProperty("拼音全称")
-  private String 拼音全称;
+  private String fundPinyin;
 }

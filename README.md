@@ -1,4 +1,4 @@
-# Quantitative-Trading
+# TranquilityTrading-BE
 > 此项目为快速启动种子项目包含了目前主流的三大解决方案.
 
 ## 框架

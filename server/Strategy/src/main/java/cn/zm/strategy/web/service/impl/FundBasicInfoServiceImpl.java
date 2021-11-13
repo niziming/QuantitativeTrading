@@ -12,13 +12,20 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import cn.zm.plus.utils.ConvertUtil;
 
+import java.util.Objects;
+
 
 @Service
 @Transactional(rollbackFor = Exception.class)
 public class FundBasicInfoServiceImpl extends ServiceImpl<FundBasicInfoMapper, FundBasicInfo> implements IFundBasicInfoService {
     @Override
     public IPage<FundBasicInfoVO> selectByPage(IPage<FundBasicInfo> page, FundBasicInfoDTO fund_basic_info) {
-        IPage<FundBasicInfo> pageBean = baseMapper.selectPage(page, new QueryWrapper<>(fund_basic_info.convert()));
+        IPage<FundBasicInfo> pageBean = baseMapper.selectPage(page,
+          new QueryWrapper<FundBasicInfo>()
+            .likeRight(Objects.nonNull(fund_basic_info.getFundCode()), "fund_code", fund_basic_info.getFundCode())
+            .likeRight(Objects.nonNull(fund_basic_info.getFundIntro()), "fund_intro", fund_basic_info.getFundIntro())
+            .likeRight(Objects.nonNull(fund_basic_info.getFundType()), "fund_type", fund_basic_info.getFundType())
+        );
         return ConvertUtil.buildPage(pageBean);
     }
 }
