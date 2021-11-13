@@ -1,6 +1,5 @@
 package cn.zm.strategy.web.entity;
 
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

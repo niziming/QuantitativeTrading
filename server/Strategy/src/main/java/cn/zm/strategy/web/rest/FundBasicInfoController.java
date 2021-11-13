@@ -1,9 +1,12 @@
 package cn.zm.strategy.web.rest;
 
+import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.zm.common.base.ResResult;
 import cn.zm.common.config.GlobalConfig;
 import cn.zm.plus.base.BaseController;
 import cn.zm.strategy.web.entity.FundBasicInfo;
+import cn.zm.strategy.web.entity.OpenFundHisParam;
 import cn.zm.strategy.web.entity.dto.FundBasicInfoDTO;
 import cn.zm.strategy.web.entity.vo.FundBasicInfoVO;
 import cn.zm.strategy.web.service.IFundBasicInfoService;
@@ -12,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 
+import com.baomidou.mybatisplus.extension.api.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -23,9 +27,8 @@ import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.events.Event;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -67,68 +70,86 @@ public class FundBasicInfoController extends BaseController {
         return ResResult.succ(page);
     }
 
-    @ApiOperation("基金基本信息同步接口")
-    @GetMapping("/getBasicInfo")
-    public ResResult getBasicInfoSync() {
-        // 获取配置 查询参数
-        JSONObject req = services.getJSONObject("0");
-        String url = req.getString("url");
-        String param = req.getString("param");
-
-        // 调用远程接口查询所有基金数据
-        ArrayList<FundBasicInfo> res = remoteService.postCall(url, param, ArrayList.class);
-        List<String> ids = res.stream().map(r -> r.getFundCode()).collect(Collectors.toList());
-        // 查询数据库存在的数据
-        List<String> collect = fundBasicInfoService
-          .listByIds(ids)
-          .stream()
-          .map(FundBasicInfo::getFundCode)
-          .collect(Collectors.toList());
-
-        res.removeAll(collect);
-
-        // // 批量存储
-        // int size = 0;
-        // while (size < res.size()) {
-        //     List<FundBasicInfo> batch = res.stream()
-        //       .skip(size)
-        //       .limit(500)
-        //       .collect(Collectors.toList());
-        //     fundBasicInfoService.saveBatch(batch);
-        //     log.info("批量存储{}", 500);
-        //     size += 500;
-        // }
-        return ResResult.succ("同步成功");
+    @PostMapping("/history")
+    @ApiOperation("基金基本信息-历史数据查询")
+    public ResResult getHisByFund(@RequestBody OpenFundHisParam fundCode) {
+        log.info(fundCode.toString());
+        ArrayList<Map> result = remoteService.postCall("fund_em_open_fund_info", fundCode, ArrayList.class);
+        List<Object> collect = result
+                .stream()
+                .map(r -> {
+                    r.put("time", DateUtil.format(new Date((Long) r.get("净值日期")), "yyyy-MM-dd"));
+                    r.put("value", r.get("单位净值"));
+                    r.remove("净值日期");
+                    r.remove("单位净值");
+                    return r;
+                })
+                .collect(Collectors.toList());
+        return ResResult.succ(collect);
     }
 
-    @GetMapping("{fundCode}")
-    @ApiOperation("基金基本信息查询(fundCode)")
-    public ResResult<FundBasicInfoVO> get(@PathVariable String fundCode) {
-        FundBasicInfo res = fundBasicInfoService.getById(fundCode);
-        return ResResult.succ(res == null ? null : res.convert());
-    }
-
-    @PostMapping
-    @ApiOperation("基金基本信息新增")
-    public ResResult add(@RequestBody @Validated FundBasicInfoDTO fundBasicInfo) {
-        // TODO 新增
-        fundBasicInfoService.save(fundBasicInfo.convert());
-        return ResResult.succ("新增成功");
-    }
-
-    @DeleteMapping("{id}")
-    @ApiOperation("基金基本信息删除")
-    public ResResult del(@PathVariable String id) {
-        // TODO 删除
-        fundBasicInfoService.removeById(id);
-        return ResResult.succ("删除成功");
-    }
-
-    @PutMapping
-    @ApiOperation("基金基本信息修改")
-    public ResResult update(@RequestBody @Validated FundBasicInfoDTO fundBasicInfo) {
-        // TODO 修改
-        fundBasicInfoService.updateById(fundBasicInfo.convert());
-        return ResResult.succ("修改成功");
-    }
+    // @ApiOperation("基金基本信息同步接口")
+    // @GetMapping("/getBasicInfo")
+    // public ResResult getBasicInfoSync() {
+    //     // 获取配置 查询参数
+    //     JSONObject req = services.getJSONObject("0");
+    //     String url = req.getString("url");
+    //     String param = req.getString("param");
+    //
+    //     // 调用远程接口查询所有基金数据
+    //     ArrayList<FundBasicInfo> res = remoteService.postCall(url, param, ArrayList.class);
+    //     List<String> ids = res.stream().map(r -> r.getFundCode()).collect(Collectors.toList());
+    //     // 查询数据库存在的数据
+    //     List<String> collect = fundBasicInfoService
+    //       .listByIds(ids)
+    //       .stream()
+    //       .map(FundBasicInfo::getFundCode)
+    //       .collect(Collectors.toList());
+    //
+    //     res.removeAll(collect);
+    //
+    //     // // 批量存储
+    //     // int size = 0;
+    //     // while (size < res.size()) {
+    //     //     List<FundBasicInfo> batch = res.stream()
+    //     //       .skip(size)
+    //     //       .limit(500)
+    //     //       .collect(Collectors.toList());
+    //     //     fundBasicInfoService.saveBatch(batch);
+    //     //     log.info("批量存储{}", 500);
+    //     //     size += 500;
+    //     // }
+    //     return ResResult.succ("同步成功");
+    // }
+    //
+    // @GetMapping("{fundCode}")
+    // @ApiOperation("基金基本信息查询(fundCode)")
+    // public ResResult<FundBasicInfoVO> get(@PathVariable String fundCode) {
+    //     FundBasicInfo res = fundBasicInfoService.getById(fundCode);
+    //     return ResResult.succ(res == null ? null : res.convert());
+    // }
+    //
+    // @PostMapping
+    // @ApiOperation("基金基本信息新增")
+    // public ResResult add(@RequestBody @Validated FundBasicInfoDTO fundBasicInfo) {
+    //     // TODO 新增
+    //     fundBasicInfoService.save(fundBasicInfo.convert());
+    //     return ResResult.succ("新增成功");
+    // }
+    //
+    // @DeleteMapping("{id}")
+    // @ApiOperation("基金基本信息删除")
+    // public ResResult del(@PathVariable String id) {
+    //     // TODO 删除
+    //     fundBasicInfoService.removeById(id);
+    //     return ResResult.succ("删除成功");
+    // }
+    //
+    // @PutMapping
+    // @ApiOperation("基金基本信息修改")
+    // public ResResult update(@RequestBody @Validated FundBasicInfoDTO fundBasicInfo) {
+    //     // TODO 修改
+    //     fundBasicInfoService.updateById(fundBasicInfo.convert());
+    //     return ResResult.succ("修改成功");
+    // }
 }

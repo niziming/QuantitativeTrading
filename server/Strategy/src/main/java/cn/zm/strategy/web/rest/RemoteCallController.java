@@ -46,12 +46,11 @@ public class RemoteCallController extends BaseController {
   @ApiOperation("POST调用")
   public ResResult postCall(String service, @RequestBody JSONObject params) {
     long start = System.currentTimeMillis();
-    JSONObject.parseObject("", FundBasicInfo.class);
     log.info("start remote call");
     ArrayList res = ribbonService.postCall(service, params, ArrayList.class);
     Object collect = res.stream().limit(10).collect(Collectors.toList());
     // TODO 查询
-    // log.info("end remote call {}", (System.currentTimeMillis() - start));
+    log.info("end remote call {}", (System.currentTimeMillis() - start));
     return ResResult.succ(collect);
   }
 
