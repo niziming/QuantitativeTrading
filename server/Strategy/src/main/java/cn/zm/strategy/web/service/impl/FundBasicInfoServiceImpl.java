@@ -6,6 +6,7 @@ import cn.zm.strategy.web.entity.vo.FundBasicInfoVO;
 import cn.zm.strategy.web.mapper.FundBasicInfoMapper;
 import cn.zm.strategy.web.service.IFundBasicInfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -22,9 +23,9 @@ public class FundBasicInfoServiceImpl extends ServiceImpl<FundBasicInfoMapper, F
     public IPage<FundBasicInfoVO> selectByPage(IPage<FundBasicInfo> page, FundBasicInfoDTO fund_basic_info) {
         IPage<FundBasicInfo> pageBean = baseMapper.selectPage(page,
           new QueryWrapper<FundBasicInfo>()
-            .likeRight(Objects.nonNull(fund_basic_info.getFundCode()), "fund_code", fund_basic_info.getFundCode())
-            .likeRight(Objects.nonNull(fund_basic_info.getFundIntro()), "fund_intro", fund_basic_info.getFundIntro())
-            .likeRight(Objects.nonNull(fund_basic_info.getFundType()), "fund_type", fund_basic_info.getFundType())
+            .likeRight(StringUtils.isNotBlank(fund_basic_info.getFundCode()), "fund_code", fund_basic_info.getFundCode())
+            .likeRight(StringUtils.isNotBlank(fund_basic_info.getFundIntro()), "fund_intro", fund_basic_info.getFundIntro())
+            .likeRight(StringUtils.isNotBlank(fund_basic_info.getFundType()), "fund_type", fund_basic_info.getFundType())
         );
         return ConvertUtil.buildPage(pageBean);
     }

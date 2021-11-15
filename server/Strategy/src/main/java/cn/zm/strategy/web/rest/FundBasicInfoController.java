@@ -55,7 +55,6 @@ public class FundBasicInfoController extends BaseController {
         services = globalConfig.getConfig().getJSONObject("services");
     }
 
-
     @GetMapping
     @ApiOperation("基金基本信息page查询")
     @ApiImplicitParams({
