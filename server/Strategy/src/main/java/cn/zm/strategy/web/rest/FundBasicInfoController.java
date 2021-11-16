@@ -5,9 +5,10 @@ import cn.hutool.core.date.DateUtil;
 import cn.zm.common.base.ResResult;
 import cn.zm.common.config.GlobalConfig;
 import cn.zm.plus.base.BaseController;
-import cn.zm.strategy.base.FundHisData;
+import cn.zm.strategy.base.*;
 import cn.zm.strategy.web.entity.FundBasicInfo;
 import cn.zm.strategy.web.entity.OpenFundHisParam;
+import cn.zm.strategy.web.entity.TradingParam;
 import cn.zm.strategy.web.entity.dto.FundBasicInfoDTO;
 import cn.zm.strategy.web.entity.vo.FundBasicInfoVO;
 import cn.zm.strategy.web.service.IFundBasicInfoService;
@@ -72,9 +73,9 @@ public class FundBasicInfoController extends BaseController {
 
     @PostMapping("/history")
     @ApiOperation("基金基本信息-历史数据查询")
-    public ResResult<List<FundHisData>> getHisByFund(@RequestBody OpenFundHisParam fundCode) {
-        log.info(fundCode.toString());
-        ArrayList<Map> result = remoteService.postCall("fund_em_open_fund_info", fundCode, ArrayList.class);
+    public ResResult<List<FundHisData>> getHisByFund(@RequestBody OpenFundHisParam fundParam) {
+        log.info(fundParam.toString());
+        ArrayList<Map> result = remoteService.postCall("fund_em_open_fund_info", fundParam, ArrayList.class);
         List<FundHisData> collect = result
                 .stream()
                 .map(r ->
@@ -85,6 +86,39 @@ public class FundBasicInfoController extends BaseController {
                     .build())
                 .collect(Collectors.toList());
         return ResResult.succ(collect);
+    }
+
+    @PostMapping("/trading/grid")
+    @ApiOperation("网格交易")
+    public ResResult<BackTest> tradingGrid(@RequestBody TradingParam tradingParam) {
+
+        ArrayList<Map> result = remoteService.postCall("fund_em_open_fund_info", tradingParam.getFundParam(), ArrayList.class);
+        List<FundHisData> collect = result
+                .stream()
+                .map(r ->
+                        FundHisData.builder()
+                                .rate((Double) r.get("单位净值"))
+                                .value((Double) r.get("单位净值"))
+                                .time(DateUtil.format(new Date((Long) r.get("净值日期")), "yyyy-MM-dd"))
+                                .build())
+                .collect(Collectors.toList());
+
+        BackTest backTestParam = tradingParam.getBackTest();
+        backTestParam.setTridings(new ArrayList<Triding>());
+        BackTest backTest = GridTrading.trading(collect, backTestParam);
+
+        backTest.getTridings().forEach(
+            m -> {
+                m.setColor(m.getType().equals("买") ? "green" : "red");
+                m.setText(m.getType()+Math.floor(m.getCash()));
+                m.setShape(m.getType().equals("买") ? "arrowDown" : "arrowUp");
+                m.setPosition(m.getType().equals("买") ? "belowBar" : "aboveBar");
+            }
+        );
+        List<Triding> buyTime = backTest.getTridings().stream().filter(b -> b.getType().equals("买")).collect(Collectors.toList());
+        backTest.setBueTime(buyTime.size());
+        backTest.setSellTime(backTest.getTridings().size() - buyTime.size());
+        return ResResult.succ(backTest);
     }
 
     // @ApiOperation("基金基本信息同步接口")
