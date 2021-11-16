@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.zm.common.base.ResResult;
 import cn.zm.common.config.GlobalConfig;
 import cn.zm.plus.base.BaseController;
+import cn.zm.strategy.base.FundHisData;
 import cn.zm.strategy.web.entity.FundBasicInfo;
 import cn.zm.strategy.web.entity.OpenFundHisParam;
 import cn.zm.strategy.web.entity.dto.FundBasicInfoDTO;
@@ -71,18 +72,17 @@ public class FundBasicInfoController extends BaseController {
 
     @PostMapping("/history")
     @ApiOperation("基金基本信息-历史数据查询")
-    public ResResult getHisByFund(@RequestBody OpenFundHisParam fundCode) {
+    public ResResult<List<FundHisData>> getHisByFund(@RequestBody OpenFundHisParam fundCode) {
         log.info(fundCode.toString());
         ArrayList<Map> result = remoteService.postCall("fund_em_open_fund_info", fundCode, ArrayList.class);
-        List<Object> collect = result
+        List<FundHisData> collect = result
                 .stream()
-                .map(r -> {
-                    r.put("time", DateUtil.format(new Date((Long) r.get("净值日期")), "yyyy-MM-dd"));
-                    r.put("value", r.get("单位净值"));
-                    r.remove("净值日期");
-                    r.remove("单位净值");
-                    return r;
-                })
+                .map(r ->
+                  FundHisData.builder()
+                    .rate((Double) r.get("单位净值"))
+                    .value((Double) r.get("单位净值"))
+                    .time(DateUtil.format(new Date((Long) r.get("净值日期")), "yyyy-MM-dd"))
+                    .build())
                 .collect(Collectors.toList());
         return ResResult.succ(collect);
     }
