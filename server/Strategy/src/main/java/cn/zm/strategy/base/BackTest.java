@@ -13,14 +13,20 @@ import java.util.List;
 @ApiModel("回测参数")
 public class BackTest {
 
+  @ApiModelProperty("买计数器")
+  private Integer addCount = 0;
+
+  @ApiModelProperty("卖计数器")
+  private Integer subCount = 0;
+
   @ApiModelProperty("加仓阈值")
-  private Float add = -0.015f;
+  private Float add = -0.025f;
 
   @ApiModelProperty("最后一次净值")
   private Double lastValue = 1.0d;
 
   @ApiModelProperty("减仓阈值")
-  private Float sub = 0.020f;
+  private Float sub = 0.03f;
 
   @ApiModelProperty("模式")
   private String mode;
