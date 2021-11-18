@@ -1,12 +1,10 @@
 package cn.zm.strategy.web.rest;
 
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.zm.common.base.ResResult;
 import cn.zm.common.config.GlobalConfig;
 import cn.zm.plus.base.BaseController;
 import cn.zm.strategy.base.*;
-import cn.zm.strategy.web.entity.FundBasicInfo;
 import cn.zm.strategy.web.entity.OpenFundHisParam;
 import cn.zm.strategy.web.entity.TradingParam;
 import cn.zm.strategy.web.entity.dto.FundBasicInfoDTO;
@@ -15,9 +13,7 @@ import cn.zm.strategy.web.service.IFundBasicInfoService;
 import cn.zm.strategy.web.service.RemoteService;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 
-import com.baomidou.mybatisplus.extension.api.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -26,14 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.yaml.snakeyaml.events.Event;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 基金基本信息
@@ -105,7 +98,7 @@ public class FundBasicInfoController extends BaseController {
 
         BackTest backTestParam = tradingParam.getBackTest();
         backTestParam.setTridings(new ArrayList<Triding>());
-        BackTest backTest = GridTrading.trading(collect, backTestParam);
+        BackTest backTest = Trading.gridTrading(collect, backTestParam);
 
         backTest.getTridings().forEach(
             m -> {

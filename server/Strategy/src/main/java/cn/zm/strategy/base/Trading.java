@@ -12,8 +12,8 @@ import java.util.Objects;
 
 @Data
 @NoArgsConstructor
-@ApiModel("网格交易")
-public class GridTrading {
+@ApiModel("交易")
+public class Trading {
   private BackTest backTest;
 
   /**
@@ -26,7 +26,7 @@ public class GridTrading {
    * @author 十渊
    * @date 2021/11/16 16:44
    */
-  public static BackTest trading(List<FundHisData> list, BackTest backTest) {
+  public static BackTest gridTrading(List<FundHisData> list, BackTest backTest) {
     if (list.size() < backTest.getSubDepth()) return backTest;
 
     // 运作资金赋值
@@ -74,7 +74,7 @@ public class GridTrading {
     // 运行资金
     Double usageCash = backTest.getUsageCash();
     // 减仓
-    Double subDepot = backTest.getDepot() * backTest.getSubRate() * weight;
+    Double subDepot = backTest.getDepot() * backTest.getSubRate();
     Double sellCash = Math.floor(subDepot * fundHisData.getValue());
 
     backTest.setDepot(backTest.getDepot() - subDepot);
@@ -103,7 +103,7 @@ public class GridTrading {
     // 运行资金
     Double usageCash = backTest.getUsageCash();
     // 购买花费
-    Double buyCash = Math.floor(usageCash * (backTest.getAddRate() * weight));
+    Double buyCash = Math.floor(usageCash *  backTest.getAddRate());
     // 加仓
     Double addDepot = buyCash / fundHisData.getValue();
 
