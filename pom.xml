@@ -63,14 +63,14 @@
     </dependencyManagement>
 
     <build>
-        <plugins>
+        <!--<plugins>-->
 
-            <!--文档工具-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
+        <!--    &lt;!&ndash;文档工具&ndash;&gt;-->
+        <!--    <plugin>-->
+        <!--        <groupId>org.apache.maven.plugins</groupId>-->
+        <!--        <artifactId>maven-javadoc-plugin</artifactId>-->
+        <!--    </plugin>-->
 
-        </plugins>
+        <!--</plugins>-->
     </build>
 </project>
