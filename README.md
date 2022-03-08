@@ -1,5 +1,5 @@
-# TranquilityTrading-BE
-> 此项目为快速启动种子项目包含了目前主流的三大解决方案.
+# QuantitativeTrading
+> 此项目为快速启动的量化交易策略项目
 
 ## 框架
 Spring Cloud Alibaba （推荐）

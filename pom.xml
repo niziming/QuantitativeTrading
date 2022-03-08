@@ -14,7 +14,7 @@
 
     <packaging>pom</packaging>
     <groupId>cn.zm</groupId>
-    <artifactId>TranquilityTrading-BE</artifactId>
+    <artifactId>QuantitativeTrading</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <description>
